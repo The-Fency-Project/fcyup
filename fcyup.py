@@ -26,7 +26,6 @@ def move_to_fencydir(file_name: str):
     dst_dir = pathlib.Path.home() / ".fency" / "bin"
     dst_dir.mkdir(parents=True, exist_ok=True)
     
-    # Сокращаем имя до первого дефиса
     short_name = src.name.split('-')[0]
     dst = dst_dir / short_name
     
