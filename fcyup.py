@@ -34,7 +34,7 @@ def move_to_fencydir(file_name: str):
 
     system = platform.system()
     if system == "windows":
-        print(f"✅ Almost done; please manually add this program to your PATH: {dst_dir}\{short_name}")
+        print(f"✅ Almost done; please manually add this program to your PATH: {dst_dir}\\{short_name}")
     else:
         shell_profiles = [".zshrc", ".bashrc", ".profile"]
         profile = None
