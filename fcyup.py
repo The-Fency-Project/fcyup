@@ -34,7 +34,7 @@ def move_to_fencydir(file_name: str):
 
     system = platform.system()
     if system == "windows":
-        print(f"✅ Almost done; please manually add this program to your PATH: {dst_dir}/{short_name}")
+        print(f"✅ Almost done; please manually add this program to your PATH: {dst_dir}\{short_name}")
     else:
         shell_profiles = [".zshrc", ".bashrc", ".profile"]
         profile = None
@@ -75,7 +75,7 @@ def main():
     # dloading voxvm
     owner, repo = "Freemorger", "voxvm"
     tag = get_latest_tag(owner, repo)
-    print(tag)
+    print(f"Found voxvm release with tag {tag}")
     fname = f"voxvm-{tag}-{os.lower()}-{arch.lower()}"
     github_api = f"https://github.com/{owner}/{repo}/releases/download/{tag}"
     download(f"{github_api}/{fname}", fname)
@@ -84,7 +84,7 @@ def main():
     # dloading fencyc 
     owner, repo = "The-Fency-Project", "fencyc"
     tag = get_latest_tag(owner, repo)
-    print(tag)
+    print(f"Found fencyc release with tag {tag}")
     fname = f"fencyc-{tag}-{os.lower()}-{arch.lower()}"
     github_api = f"https://github.com/{owner}/{repo}/releases/download/{tag}"
     download(f"{github_api}/{fname}", fname)
