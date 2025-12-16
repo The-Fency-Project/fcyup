@@ -34,7 +34,7 @@ def move_to_fencydir(file_name: str):
 
     system = platform.system()
     if system == "windows":
-        print(f"✅ Almost done; please manually add this file to PATH: {short_name}")
+        print(f"✅ Almost done; please manually add this program to your PATH: {dst_dir}/{short_name}")
     else:
         shell_profiles = [".zshrc", ".bashrc", ".profile"]
         profile = None
@@ -67,6 +67,10 @@ def download(url: str, fname: str):
 
 def main():
     os, arch = get_platform()
+    if "darwin" in os.lower():
+        os = "macos"
+    if "arm64" in arch.lower():
+        arch = "aarch64"
 
     # dloading voxvm
     owner, repo = "Freemorger", "voxvm"
