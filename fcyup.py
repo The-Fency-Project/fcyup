@@ -95,8 +95,7 @@ def main():
         "windows": ".lib",
     }
     ext = ext_map.get(os_lower, ".a")  # default to .a if unknown
-
-    runtime_fname = f"runtime-{tag}-{os_lower}-{arch_lower}{ext}"
+    runtime_fname = f"libfcyrt-{tag}-{os_lower}-{arch_lower}{ext}"
     github_api = f"https://github.com/{owner}/{repo}/releases/download/{tag}"
     download(f"{github_api}/{runtime_fname}", runtime_fname)
     move_to_fencydir(runtime_fname, subdir="runtime")
