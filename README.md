@@ -1,5 +1,5 @@
 # The Fency programming language toolchain installation script  
-This script will get fency toolchain (voxvm + fencyc) on your machine. (or 
+This script will get fency toolchain (fencyc+ libs) on your machine. (or 
 update an existing installation).  
 Just run it with python as normally, e.g. `python3 fcyup.py`  
 ## Faster installation way 

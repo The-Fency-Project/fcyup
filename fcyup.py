@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 import json
 from platform import platform
@@ -19,11 +18,11 @@ def dload_progress(count, blksize, totsize):
         print(f"Downloaded {dloaded/1024}kB", end='\r')
 
 
-def move_to_fencydir(file_name: str):
+def move_to_fencydir(file_name: str, subdir: str = "bin"):
     import shutil, os, pathlib, platform 
 
     src = pathlib.Path(file_name)
-    dst_dir = pathlib.Path.home() / ".fency" / "bin"
+    dst_dir = pathlib.Path.home() / ".fency" / subdir
     dst_dir.mkdir(parents=True, exist_ok=True)
     
     short_name = src.name.split('-')[0]
@@ -33,7 +32,7 @@ def move_to_fencydir(file_name: str):
     dst.chmod(0o755)  # making it executable 
 
     system = platform.system()
-    if system == "windows":
+    if system == "Windows":
         print(f"✅ Almost done; please manually add this program to your PATH: {dst_dir}\\{short_name}")
     else:
         shell_profiles = [".zshrc", ".bashrc", ".profile"]
@@ -66,31 +65,44 @@ def download(url: str, fname: str):
     print(f"\nDownloaded {fname}")
 
 def main():
-    os, arch = get_platform()
-    if "darwin" in os.lower():
-        os = "macos"
-    if "arm64" in arch.lower():
-        arch = "aarch64"
+    os_name, arch = get_platform()
+    os_lower = os_name.lower()
+    arch_lower = arch.lower()
 
-    # dloading voxvm
-    owner, repo = "Freemorger", "voxvm"
-    tag = get_latest_tag(owner, repo)
-    print(f"Found voxvm release with tag {tag}")
-    fname = f"voxvm-{tag}-{os.lower()}-{arch.lower()}"
-    github_api = f"https://github.com/{owner}/{repo}/releases/download/{tag}"
-    download(f"{github_api}/{fname}", fname)
-    move_to_fencydir(fname)
+    if "darwin" in os_lower:
+        os_lower = "macos"
+    if "arm64" in arch_lower:
+        arch_lower = "aarch64"
 
-    # dloading fencyc 
+    # Download and install fencyc
     owner, repo = "The-Fency-Project", "fencyc"
     tag = get_latest_tag(owner, repo)
     print(f"Found fencyc release with tag {tag}")
-    fname = f"fencyc-{tag}-{os.lower()}-{arch.lower()}"
+    fname = f"fencyc-{tag}-{os_lower}-{arch_lower}"
     github_api = f"https://github.com/{owner}/{repo}/releases/download/{tag}"
     download(f"{github_api}/{fname}", fname)
     move_to_fencydir(fname)
-    
+
+    # Download runtime library
+    owner, repo = "The-Fency-Project", "runtime"
+    tag = get_latest_tag(owner, repo)
+    print(f"Found runtime release with tag {tag}")
+
+    ext_map = {
+        "linux": ".a",
+        "darwin": ".a",
+        "macos": ".a",
+        "windows": ".lib",
+    }
+    ext = ext_map.get(os_lower, ".a")  # default to .a if unknown
+
+    runtime_fname = f"runtime-{tag}-{os_lower}-{arch_lower}{ext}"
+    github_api = f"https://github.com/{owner}/{repo}/releases/download/{tag}"
+    download(f"{github_api}/{runtime_fname}", runtime_fname)
+    move_to_fencydir(runtime_fname, subdir="runtime")
+
+    print("\n⚠️ You now need to install 'qbe' yourself via your package manager (apt/pacman/etc) or build from source:")
+    print("   https://c9x.me/compile/")
 
 if __name__ == "__main__":
     main()
-
