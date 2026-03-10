@@ -98,7 +98,11 @@ def main():
     runtime_fname = f"libfcyrt-{tag}-{os_lower}-{arch_lower}{ext}"
     github_api = f"https://github.com/{owner}/{repo}/releases/download/{tag}"
     download(f"{github_api}/{runtime_fname}", runtime_fname)
-    move_to_fencydir(runtime_fname, subdir="runtime")
+    dst_path = move_to_fencydir(runtime_fname, subdir="runtime")
+
+    import pathlib
+    dst_path_with_ext = pathlib.Path(dst_path + ext)
+    pathlib.Path(dst_path).rename(dst_path_with_ext)
 
     print("\n⚠️ You now need to install 'qbe' yourself via your package manager (apt/pacman/etc) or build from source:")
     print("   https://c9x.me/compile/")
