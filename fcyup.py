@@ -104,19 +104,23 @@ def install_stdlib(fencyc: pathlib.Path, tag: str):
         shutil.copytree(source_root, build_root)
         env = os.environ.copy()
         env["PATH"] = str(fencyc.parent) + os.pathsep + env.get("PATH", "")
-        subprocess.run([str(fencyc), "build"], cwd=build_root, env=env, check=True)
-
-        metadata = build_root / "std.fmeta"
-        objects = build_root / "std.fmeta.objects"
-        if not metadata.is_file() or not objects.is_dir():
-            raise RuntimeError("stdlib build did not produce std.fmeta and std.fmeta.objects")
         destination = FENCY_DIR / "libs" / "std"
         destination.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(metadata, destination / metadata.name)
-        installed_objects = destination / objects.name
-        if installed_objects.exists():
-            shutil.rmtree(installed_objects)
-        shutil.copytree(objects, installed_objects)
+        sources = ["core.fcy", "libc.fcy", "alloc.fcy", "io.fcy", "prelude.fcy"]
+        for backend, opt_level in (("qbe", "0"), ("llvm", "3")):
+            metadata = build_root / f"std-{backend}.fmeta"
+            subprocess.run([
+                str(fencyc), "input", *sources, "--library", "--nostd",
+                "--backend", backend, "-O", opt_level, "-o", str(metadata),
+            ], cwd=build_root, env=env, check=True)
+            objects = build_root / f"{metadata.name}.objects"
+            if not metadata.is_file() or not objects.is_dir():
+                raise RuntimeError(f"stdlib build did not produce {metadata.name} and its objects")
+            shutil.copy2(metadata, destination / metadata.name)
+            installed_objects = destination / objects.name
+            if installed_objects.exists():
+                shutil.rmtree(installed_objects)
+            shutil.copytree(objects, installed_objects)
         source_destination = destination / "src"
         if source_destination.exists():
             shutil.rmtree(source_destination)
