@@ -107,7 +107,7 @@ def install_stdlib(fencyc: pathlib.Path, tag: str):
         destination = FENCY_DIR / "libs" / "std"
         destination.mkdir(parents=True, exist_ok=True)
         sources = ["core/mod.fcy", "libc/mod.fcy", "alloc/mod.fcy", "io/mod.fcy", "prelude/mod.fcy", "rc/mod.fcy"]
-        for backend, opt_level in (("qbe", "0"), ("llvm", "3")):
+        for backend, opt_level in (("llvm", "3"),):
             metadata = build_root / f"std-{backend}.fmeta"
             subprocess.run([
                 str(fencyc), "input", *sources, "--library", "--nostd",
